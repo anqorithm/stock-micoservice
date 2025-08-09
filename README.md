@@ -40,50 +40,32 @@
 
 ### Installation & Setup
 ```bash
-# 1. Clone the repository
-git clone <repository-url>
-cd stocks
-
-# 2. Quick setup with Makefile
-make setup
-
-# 3. Run the application
-make run
+$ git clone https://github.com/anqorithm/stock-micoservice.git
+$ cd stock-micoservice
+$ make run
 ```
 
 **API Available at**: `http://localhost:8080`
 
 ### Using Makefile Commands
 ```bash
-# View all available commands
-make help
-
-# Development workflow
-make dev                    # Complete development setup
-make build                  # Build the application
-make test                   # Run tests
-make coverage              # Run tests with coverage
-make run                   # Start the application
-
-# Database management
-make start-db              # Start PostgreSQL
-make stop-db               # Stop PostgreSQL
-
-# Utilities
-make health                # Check application health
-make clean                 # Clean build artifacts
+$ make help
+$ make dev
+$ make build
+$ make test
+$ make coverage
+$ make run
+$ make start-db
+$ make stop-db
+$ make health
+$ make clean
 ```
 
-### Manual Setup (without Makefile)
+### Manual Setup
 ```bash
-# Start PostgreSQL database
-docker-compose up -d
-
-# Build and run
-./mvnw spring-boot:run
-
-# Run tests with coverage
-./mvnw clean test jacoco:report
+$ docker-compose up -d
+$ ./mvnw spring-boot:run
+$ ./mvnw clean test jacoco:report
 ```
 
 ## API Endpoints
@@ -144,8 +126,7 @@ docker-compose up -d
 ## Example Request
 
 ```bash
-# Create a new stock
-curl -X POST http://localhost:8080/stocks \
+$ curl -X POST http://localhost:8080/stocks \
   -H "Content-Type: application/json" \
   -d '{
     "symbol": "AAPL",
@@ -175,3 +156,7 @@ curl -X POST http://localhost:8080/stocks \
 - **High Test Coverage**: 99% instruction coverage with 240 tests
 - **RESTful Design**: Clean API following REST principles
 - **Health Monitoring**: Built-in health checks and metrics
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
