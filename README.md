@@ -35,7 +35,7 @@
 
 ## Architecture
 
-![Architecture Diagram](architecture.png)
+![Architecture Diagram](/assets/architecture.png)
 
 The Stock Market Microservice follows a layered architecture pattern:
 
