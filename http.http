@@ -1,0 +1,276 @@
+### Stock Market API Tests
+
+@baseUrl = http://localhost:9898
+@token = eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTc1NDc0OTgwNywiZXhwIjoxNzU0ODM2MjA3fQ.T3qgAbgFwRO12KMefjHLMhQjk1Px1z3JSaC27ntQardQYeHh_yl-60bjTeW8GpoX
+
+### Health Check
+GET {{baseUrl}}/api/v1/stocks/health
+
+###
+
+### Register New User
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123",
+  "firstName": "Test",
+  "lastName": "User"
+}
+
+###
+
+### Login User
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### Validate JWT Token
+POST {{baseUrl}}/api/v1/auth/validate
+Authorization: Bearer {{token}}
+
+###
+
+### Get Current User
+GET {{baseUrl}}/api/v1/auth/me
+Authorization: Bearer {{token}}
+
+###
+
+### Create Stock (Requires JWT)
+POST {{baseUrl}}/api/v1/stocks
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "symbol": "AAPL",
+  "name": "Apple Inc.",
+  "currentPrice": 175.50,
+  "marketCap": 2800000000000,
+  "sector": "Technology",
+  "industry": "Consumer Electronics",
+  "volume": 50000000,
+  "peRatio": 28.5,
+  "dividendYield": 0.5,
+  "weekHigh52": 180.00,
+  "weekLow52": 140.00,
+  "beta": 1.2
+}
+
+###
+
+### Get All Stocks (Paginated)
+GET {{baseUrl}}/api/v1/stocks?page=0&size=10
+Authorization: Bearer {{token}}
+
+###
+
+### Get Stock by ID
+GET {{baseUrl}}/api/v1/stocks/1
+Authorization: Bearer {{token}}
+
+###
+
+### Get Stock by Symbol
+GET {{baseUrl}}/api/v1/stocks/symbol/AAPL
+Authorization: Bearer {{token}}
+
+###
+
+### Update Stock
+PUT {{baseUrl}}/api/v1/stocks/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "symbol": "AAPL",
+  "name": "Apple Inc.",
+  "currentPrice": 180.00,
+  "marketCap": 2850000000000,
+  "sector": "Technology",
+  "industry": "Consumer Electronics",
+  "volume": 55000000,
+  "peRatio": 29.0,
+  "dividendYield": 0.52,
+  "weekHigh52": 185.00,
+  "weekLow52": 140.00,
+  "beta": 1.25
+}
+
+###
+
+### Update Stock Price
+PATCH {{baseUrl}}/api/v1/stocks/AAPL/price
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "price": 182.50
+}
+
+###
+
+### Update Stock Volume
+PATCH {{baseUrl}}/api/v1/stocks/AAPL/volume
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "volume": 60000000
+}
+
+###
+
+### Search Stocks
+GET {{baseUrl}}/api/v1/stocks/search?name=Apple&page=0&size=5
+Authorization: Bearer {{token}}
+
+###
+
+### Get Stocks by Sector
+GET {{baseUrl}}/api/v1/stocks/sector/Technology?page=0&size=10
+Authorization: Bearer {{token}}
+
+###
+
+### Get Stocks by Industry
+GET {{baseUrl}}/api/v1/stocks/industry/Consumer Electronics?page=0&size=10
+Authorization: Bearer {{token}}
+
+###
+
+### Get Stocks in Price Range
+GET {{baseUrl}}/api/v1/stocks/price-range?minPrice=100&maxPrice=200&page=0&size=10
+Authorization: Bearer {{token}}
+
+###
+
+### Top Stocks by Market Cap
+GET {{baseUrl}}/api/v1/stocks/top/market-cap?limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Top Stocks by Volume
+GET {{baseUrl}}/api/v1/stocks/top/volume?limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### High Performing Stocks
+GET {{baseUrl}}/api/v1/stocks/performers/high?limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Low Performing Stocks
+GET {{baseUrl}}/api/v1/stocks/performers/low?limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Value Stocks (Low P/E)
+GET {{baseUrl}}/api/v1/stocks/value-stocks?maxPeRatio=15&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Dividend Stocks
+GET {{baseUrl}}/api/v1/stocks/dividend-stocks?minDividendYield=2.0&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Get All Sectors
+GET {{baseUrl}}/api/v1/stocks/sectors
+Authorization: Bearer {{token}}
+
+###
+
+### Get All Industries
+GET {{baseUrl}}/api/v1/stocks/industries
+Authorization: Bearer {{token}}
+
+###
+
+### Get Stock Statistics
+GET {{baseUrl}}/api/v1/stocks/stats/count
+Authorization: Bearer {{token}}
+
+###
+
+### Check if Stock Exists
+GET {{baseUrl}}/api/v1/stocks/exists/symbol/AAPL
+Authorization: Bearer {{token}}
+
+###
+
+### Create Multiple Stocks (Batch)
+POST {{baseUrl}}/api/v1/stocks/batch
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+[
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet Inc.",
+    "currentPrice": 125.30,
+    "marketCap": 1580000000000,
+    "sector": "Technology",
+    "industry": "Internet Content & Information",
+    "volume": 25000000,
+    "peRatio": 22.8,
+    "dividendYield": 0.0,
+    "weekHigh52": 152.00,
+    "weekLow52": 83.45,
+    "beta": 1.1
+  },
+  {
+    "symbol": "MSFT",
+    "name": "Microsoft Corporation",
+    "currentPrice": 412.81,
+    "marketCap": 3070000000000,
+    "sector": "Technology",
+    "industry": "Software",
+    "volume": 18000000,
+    "peRatio": 34.2,
+    "dividendYield": 0.72,
+    "weekHigh52": 468.35,
+    "weekLow52": 309.45,
+    "beta": 0.9
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla Inc.",
+    "currentPrice": 248.50,
+    "marketCap": 790000000000,
+    "sector": "Consumer Discretionary",
+    "industry": "Auto Manufacturers",
+    "volume": 75000000,
+    "peRatio": 62.5,
+    "dividendYield": 0.0,
+    "weekHigh52": 299.29,
+    "weekLow52": 138.80,
+    "beta": 2.3
+  }
+]
+
+###
+
+### Delete Stock by ID
+DELETE {{baseUrl}}/api/v1/stocks/1
+Authorization: Bearer {{token}}
+
+###
+
+### Delete Stock by Symbol
+DELETE {{baseUrl}}/api/v1/stocks/symbol/AAPL
+Authorization: Bearer {{token}}

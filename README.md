@@ -1,14 +1,15 @@
 # Stock Market Microservice
 
-> A Spring Boot microservice for stock market data management with comprehensive CRUD operations, advanced search capabilities, and robust testing coverage.
+> A Spring Boot microservice for stock market data management with **JWT authentication**, comprehensive CRUD operations, advanced search capabilities, and robust testing coverage.
 
 ## Project Status
 
 ![Java](https://img.shields.io/badge/Java-17-blue?style=flat-square&logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-brightgreen?style=flat-square&logo=springboot)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?style=flat-square&logo=postgresql)
-![Coverage](https://img.shields.io/badge/Coverage-99%25-brightgreen?style=flat-square&logo=codecov)
-![Tests](https://img.shields.io/badge/Tests-240%20passing-brightgreen?style=flat-square&logo=junit5)
+![Coverage](https://img.shields.io/badge/Coverage-94%25-brightgreen?style=flat-square&logo=codecov)
+![Tests](https://img.shields.io/badge/Tests-251%20passing-brightgreen?style=flat-square&logo=junit5)
+![Security](https://img.shields.io/badge/Security-JWT%20Auth-blue?style=flat-square&logo=jsonwebtokens)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat-square&logo=github-actions)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 
@@ -16,20 +17,21 @@
 
 | Metric | Covered | Total | Percent |
 |--------|---------|-------|---------|
-| Instructions | 2,376 | 2,400 | 99.0% |
-| Branches | 110 | 120 | 91.7% |
-| Lines | 527 | 534 | 98.7% |
-| Methods | 173 | 173 | 100% |
-| Classes | 11 | 11 | 100% |
+| Instructions | 3,374 | 3,583 | 94.2% |
+| Branches | 145 | 166 | 87.3% |
+| Lines | 762 | 812 | 93.8% |
+| Methods | 264 | 276 | 95.7% |
+| Classes | 22 | 22 | 100% |
 
 **Test Suite Breakdown:**
-- **Unit Tests**: 240 tests across all layers
-- **Entity Tests**: 19 tests (validation & business logic)
-- **Repository Tests**: 40 tests (JPA operations with H2)
-- **Service Tests**: 42 tests (business logic with Mockito)
-- **Controller Tests**: 71 tests (REST API with MockMvc)
-- **Exception Tests**: 67 tests (error handling scenarios)
-- **Config Tests**: 1 test (cache configuration)
+- **Total Tests**: 251 tests across all layers
+- **Entity Tests**: 20 tests (User & Stock validation)
+- **Repository Tests**: 55 tests (JPA operations with H2)
+- **Service Tests**: 89 tests (business logic with Mockito)
+- **Controller Tests**: 14 tests (Authentication API)
+- **Security Tests**: 29 tests (JWT & Authentication)
+- **Exception Tests**: 37 tests (error handling scenarios)
+- **Config Tests**: 11 tests (cache & security configuration)
 
 ## Quick Start
 
@@ -47,6 +49,16 @@ $ make run
 ```
 
 **API Available at**: `http://localhost:8080`
+
+### Database Management
+- **PostgreSQL Database**: Available at `localhost:5432`
+- **pgAdmin Interface**: `http://localhost:5050`
+  - Email: `admin@admin.com`
+  - Password: `admin`
+  - Server: `postgres` (host), Port: `5432`
+  - Database: `stocks`
+  - Username: `postgres`
+  - Password: `password`
 
 ### Using Makefile Commands
 ```bash
@@ -70,6 +82,16 @@ $ ./mvnw clean test jacoco:report
 ```
 
 ## API Endpoints
+
+### Authentication (JWT)
+| Method | Endpoint | Description | Request Body | Response |
+|--------|----------|-------------|--------------|----------|
+| POST | `/auth/register` | Register new user | `{"username", "email", "password", "firstName", "lastName"}` | 201 Created |
+| POST | `/auth/login` | User login | `{"username", "password"}` | JWT token |
+| POST | `/auth/validate` | Validate JWT token | Header: `Authorization: Bearer {token}` | Token validity |
+| GET | `/auth/me` | Get current user | Header: `Authorization: Bearer {token}` | User details |
+
+> **Note**: All `/stocks/**` endpoints require valid JWT token in Authorization header
 
 ### Stock Management
 | Method | Endpoint | Description | Response |
@@ -124,11 +146,37 @@ $ ./mvnw clean test jacoco:report
 |--------|----------|-------------|----------|
 | GET | `/stocks/health` | API health status | Health status object |
 
-## Example Request
+## Example Requests
 
+### Authentication Flow
 ```bash
+# Register a new user
+$ curl -X POST http://localhost:8080/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user123",
+    "email": "user@example.com", 
+    "password": "password123",
+    "firstName": "John",
+    "lastName": "Doe"
+  }'
+
+# Login to get JWT token
+$ curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user123",
+    "password": "password123"
+  }'
+# Response: {"token":"eyJhbGc...", "username":"user123", "email":"user@example.com", "role":"USER"}
+```
+
+### Using Protected Endpoints
+```bash
+# Create stock (requires JWT token)
 $ curl -X POST http://localhost:8080/stocks \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzM4NCJ9..." \
   -d '{
     "symbol": "AAPL",
     "name": "Apple Inc.",
@@ -141,21 +189,26 @@ $ curl -X POST http://localhost:8080/stocks \
 ## Tech Stack
 
 - **Framework**: Spring Boot 3.5.4
-- **Database**: PostgreSQL 15
+- **Security**: Spring Security 6 + JWT Authentication
+- **Database**: PostgreSQL 15 + H2 (testing)
 - **Data Access**: JPA/Hibernate + JDBC Template
-- **Testing**: JUnit 5, Mockito, MockMvc
-- **Coverage**: JaCoCo
+- **Authentication**: JSON Web Tokens (JWT) with JJWT library
+- **Testing**: JUnit 5, Mockito, MockMvc, DataJpaTest
+- **Coverage**: JaCoCo (94% instruction coverage)
 - **Build Tool**: Maven
 - **Connection Pool**: HikariCP
 
 ## Key Features
 
+- **JWT Authentication**: Secure user registration, login, and token-based auth
 - **CRUD Operations**: Complete stock management functionality
 - **Advanced Search**: Filter by sector, industry, price range, performance
 - **Dual Data Access**: JPA for writes, JDBC for optimized reads
 - **Input Validation**: Comprehensive validation with error handling
-- **High Test Coverage**: 99% instruction coverage with 240 tests
+- **High Test Coverage**: 94% instruction coverage with 251 tests
 - **RESTful Design**: Clean API following REST principles
+- **User Management**: Role-based access control (USER/ADMIN)
+- **Security Features**: Password encryption, token validation, protected endpoints
 - **Health Monitoring**: Built-in health checks and metrics
 
 ## License

@@ -22,7 +22,13 @@ public class RootController {
                 "endpoints", Map.of(
                         "stocks", "/api/v1/stocks",
                         "health", "/api/v1/stocks/health",
-                        "actuator", "/api/v1/actuator"
+                        "actuator", "/api/v1/actuator",
+                        "auth", Map.of(
+                                "login", "/api/v1/auth/login",
+                                "register", "/api/v1/auth/register",
+                                "validate", "/api/v1/auth/validate",
+                                "me", "/api/v1/auth/me"
+                        )
                 ),
                 "documentation", "https://github.com/anqorithm/stock-micoservice"
         );
