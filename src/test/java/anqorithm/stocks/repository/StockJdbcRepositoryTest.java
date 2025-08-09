@@ -1,5 +1,7 @@
 package anqorithm.stocks.repository;
 
+import anqorithm.stocks.repository.jdbc.StockJdbcRepository;
+
 import anqorithm.stocks.entity.Stock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,49 +124,8 @@ class StockJdbcRepositoryTest {
         verify(jdbcTemplate).queryForObject(anyString(), eq(Long.class), eq("Technology"));
     }
 
-    @Test
-    void testUpdateCurrentPrice() {
-        when(jdbcTemplate.update(anyString(), any(BigDecimal.class), eq(1L)))
-                .thenReturn(1);
-
-        int result = stockJdbcRepository.updateCurrentPrice(1L, new BigDecimal("160.00"));
-
-        assertEquals(1, result);
-        verify(jdbcTemplate).update(anyString(), any(BigDecimal.class), eq(1L));
-    }
-
-    @Test
-    void testUpdateVolume() {
-        when(jdbcTemplate.update(anyString(), eq(1500000L), eq(1L)))
-                .thenReturn(1);
-
-        int result = stockJdbcRepository.updateVolume(1L, 1500000L);
-
-        assertEquals(1, result);
-        verify(jdbcTemplate).update(anyString(), eq(1500000L), eq(1L));
-    }
-
-    @Test
-    void testDeleteBySymbol() {
-        when(jdbcTemplate.update(anyString(), eq("AAPL")))
-                .thenReturn(1);
-
-        int result = stockJdbcRepository.deleteBySymbol("AAPL");
-
-        assertEquals(1, result);
-        verify(jdbcTemplate).update(anyString(), eq("AAPL"));
-    }
-
-    @Test
-    void testUpdatePriceAndVolumeBySymbol() {
-        when(jdbcTemplate.update(anyString(), any(BigDecimal.class), eq(1800000L), eq("AAPL")))
-                .thenReturn(1);
-
-        int result = stockJdbcRepository.updatePriceAndVolumeBySymbol("AAPL", new BigDecimal("165.00"), 1800000L);
-
-        assertEquals(1, result);
-        verify(jdbcTemplate).update(anyString(), any(BigDecimal.class), eq(1800000L), eq("AAPL"));
-    }
+    // Note: Update and delete operations are handled by JPA repository
+    // JDBC repository is only for SELECT operations
 
     @Test
     void testFindById_Found() {

@@ -1,4 +1,4 @@
-package anqorithm.stocks.repository;
+package anqorithm.stocks.repository.jpa;
 
 import anqorithm.stocks.entity.Stock;
 import org.springframework.data.domain.Page;

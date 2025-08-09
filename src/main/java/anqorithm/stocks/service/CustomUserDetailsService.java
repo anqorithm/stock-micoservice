@@ -1,7 +1,7 @@
 package anqorithm.stocks.service;
 
 import anqorithm.stocks.entity.User;
-import anqorithm.stocks.repository.UserRepository;
+import anqorithm.stocks.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

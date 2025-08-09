@@ -1,7 +1,7 @@
 package anqorithm.stocks.service;
 
 import anqorithm.stocks.entity.User;
-import anqorithm.stocks.repository.UserRepository;
+import anqorithm.stocks.repository.jpa.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

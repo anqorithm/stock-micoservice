@@ -4,7 +4,7 @@ import anqorithm.stocks.dto.AuthResponse;
 import anqorithm.stocks.dto.LoginRequest;
 import anqorithm.stocks.dto.RegisterRequest;
 import anqorithm.stocks.entity.User;
-import anqorithm.stocks.repository.UserRepository;
+import anqorithm.stocks.repository.jpa.UserRepository;
 import anqorithm.stocks.security.JwtUtil;
 import anqorithm.stocks.service.CustomUserDetailsService;
 import jakarta.validation.Valid;

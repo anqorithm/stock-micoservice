@@ -1,8 +1,8 @@
 package anqorithm.stocks.service;
 
 import anqorithm.stocks.entity.Stock;
-import anqorithm.stocks.repository.StockRepository;
-import anqorithm.stocks.repository.StockJdbcRepository;
+import anqorithm.stocks.repository.jpa.StockRepository;
+import anqorithm.stocks.repository.jdbc.StockJdbcRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -142,8 +142,13 @@ public class StockService {
     @CacheEvict(value = "stocks", key = "#symbol")
     @Transactional
     public boolean deleteBySymbol(String symbol) {
-        int deletedRows = stockJdbcRepository.deleteBySymbol(symbol.toUpperCase());
-        return deletedRows > 0;
+        // Use JPA repository for delete operations
+        Optional<Stock> stock = stockRepository.findBySymbol(symbol.toUpperCase());
+        if (stock.isPresent()) {
+            stockRepository.delete(stock.get());
+            return true;
+        }
+        return false;
     }
 
     @Transactional
@@ -166,7 +171,16 @@ public class StockService {
 
     @Transactional
     public int bulkUpdatePriceAndVolume(String symbol, BigDecimal price, Long volume) {
-        return stockJdbcRepository.updatePriceAndVolumeBySymbol(symbol.toUpperCase(), price, volume);
+        // Use JPA repository for update operations
+        Optional<Stock> stockOpt = stockRepository.findBySymbol(symbol.toUpperCase());
+        if (stockOpt.isPresent()) {
+            Stock stock = stockOpt.get();
+            stock.setCurrentPrice(price);
+            stock.setVolume(volume);
+            stockRepository.save(stock);
+            return 1;
+        }
+        return 0;
     }
 
     @Transactional(readOnly = true)

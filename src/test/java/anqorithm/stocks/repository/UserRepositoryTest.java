@@ -1,5 +1,6 @@
 package anqorithm.stocks.repository;
 
+import anqorithm.stocks.repository.jpa.UserRepository;
 import anqorithm.stocks.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -116,31 +117,8 @@ class UserRepositoryTest {
         assertFalse(userRepository.existsByEmail("nonexistent@example.com"));
     }
 
-    @Test
-    void testFindActiveUserByUsername() {
-        Optional<User> activeUser = userRepository.findActiveUserByUsername("user1");
-        assertTrue(activeUser.isPresent());
-        assertEquals("user1", activeUser.get().getUsername());
-        assertTrue(activeUser.get().isEnabled());
-        
-        Optional<User> inactiveUser = userRepository.findActiveUserByUsername("user2");
-        assertFalse(inactiveUser.isPresent());
-    }
-
-    @Test
-    void testCountByRole() {
-        long userCount = userRepository.countByRole(User.Role.USER);
-        assertEquals(2, userCount);
-        
-        long adminCount = userRepository.countByRole(User.Role.ADMIN);
-        assertEquals(1, adminCount);
-    }
-
-    @Test
-    void testCountActiveUsers() {
-        long activeCount = userRepository.countActiveUsers();
-        assertEquals(2, activeCount); // user1 and adminUser are enabled
-    }
+    // Note: Methods findActiveUserByUsername, countByRole, and countActiveUsers
+    // have been moved to UserJdbcRepository for read operations only
 
     @Test
     void testSaveUser() {

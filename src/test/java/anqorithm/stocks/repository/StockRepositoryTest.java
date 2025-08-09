@@ -1,5 +1,7 @@
 package anqorithm.stocks.repository;
 
+import anqorithm.stocks.repository.jpa.StockRepository;
+
 import anqorithm.stocks.entity.Stock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

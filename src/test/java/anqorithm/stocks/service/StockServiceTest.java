@@ -1,8 +1,8 @@
 package anqorithm.stocks.service;
 
 import anqorithm.stocks.entity.Stock;
-import anqorithm.stocks.repository.StockRepository;
-import anqorithm.stocks.repository.StockJdbcRepository;
+import anqorithm.stocks.repository.jpa.StockRepository;
+import anqorithm.stocks.repository.jdbc.StockJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -346,22 +346,24 @@ class StockServiceTest {
 
     @Test
     void testDeleteBySymbolSuccess() {
-        when(stockJdbcRepository.deleteBySymbol("AAPL")).thenReturn(1);
-
+        when(stockRepository.findBySymbol("AAPL")).thenReturn(Optional.of(sampleStock));
+        
         boolean result = stockService.deleteBySymbol("aapl");
 
         assertTrue(result);
-        verify(stockJdbcRepository).deleteBySymbol("AAPL");
+        verify(stockRepository).findBySymbol("AAPL");
+        verify(stockRepository).delete(sampleStock);
     }
 
     @Test
     void testDeleteBySymbolNotFound() {
-        when(stockJdbcRepository.deleteBySymbol("NONEXISTENT")).thenReturn(0);
+        when(stockRepository.findBySymbol("NONEXISTENT")).thenReturn(Optional.empty());
 
         boolean result = stockService.deleteBySymbol("NONEXISTENT");
 
         assertFalse(result);
-        verify(stockJdbcRepository).deleteBySymbol("NONEXISTENT");
+        verify(stockRepository).findBySymbol("NONEXISTENT");
+        verify(stockRepository, never()).delete(any());
     }
 
     @Test
@@ -418,13 +420,14 @@ class StockServiceTest {
 
     @Test
     void testBulkUpdatePriceAndVolume() {
-        when(stockJdbcRepository.updatePriceAndVolumeBySymbol("AAPL", new BigDecimal("155.00"), 1500000L))
-            .thenReturn(1);
+        when(stockRepository.findBySymbol("AAPL")).thenReturn(Optional.of(sampleStock));
+        when(stockRepository.save(any(Stock.class))).thenReturn(sampleStock);
 
         int result = stockService.bulkUpdatePriceAndVolume("aapl", new BigDecimal("155.00"), 1500000L);
 
         assertEquals(1, result);
-        verify(stockJdbcRepository).updatePriceAndVolumeBySymbol("AAPL", new BigDecimal("155.00"), 1500000L);
+        verify(stockRepository).findBySymbol("AAPL");
+        verify(stockRepository).save(any(Stock.class));
     }
 
     @Test
