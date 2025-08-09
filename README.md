@@ -42,6 +42,7 @@
 ```bash
 $ git clone https://github.com/anqorithm/stock-micoservice.git
 $ cd stock-micoservice
+$ chmod +x ./mvnw
 $ make run
 ```
 

@@ -95,6 +95,7 @@ health:
 setup: start-db build test
 	@echo "✅ Development environment is ready!"
 	@echo "Run 'make run' to start the application"
+	@chmod +x ./mvnw
 
 # Full CI pipeline
 ci: clean build test coverage verify
