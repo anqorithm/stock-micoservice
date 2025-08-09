@@ -148,43 +148,7 @@ $ ./mvnw clean test jacoco:report
 
 ## Example Requests
 
-### Authentication Flow
-```bash
-# Register a new user
-$ curl -X POST http://localhost:8080/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "user123",
-    "email": "user@example.com", 
-    "password": "password123",
-    "firstName": "John",
-    "lastName": "Doe"
-  }'
-
-# Login to get JWT token
-$ curl -X POST http://localhost:8080/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "user123",
-    "password": "password123"
-  }'
-# Response: {"token":"eyJhbGc...", "username":"user123", "email":"user@example.com", "role":"USER"}
-```
-
-### Using Protected Endpoints
-```bash
-# Create stock (requires JWT token)
-$ curl -X POST http://localhost:8080/stocks \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzM4NCJ9..." \
-  -d '{
-    "symbol": "AAPL",
-    "name": "Apple Inc.",
-    "currentPrice": 150.00,
-    "sector": "Technology",
-    "industry": "Consumer Electronics"
-  }'
-```
+See [http.http](http.http) for complete request examples.
 
 ## Tech Stack
 
