@@ -2,6 +2,7 @@ package anqorithm.stocks.service;
 
 import anqorithm.stocks.entity.Stock;
 import anqorithm.stocks.repository.StockRepository;
+import anqorithm.stocks.repository.StockJdbcRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,9 @@ class StockServiceTest {
 
     @Mock
     private StockRepository stockRepository;
+
+    @Mock
+    private StockJdbcRepository stockJdbcRepository;
 
     @Mock
     private StockReadService stockReadService;
@@ -153,14 +157,14 @@ class StockServiceTest {
         expectedStock.setName("Alphabet Inc.");
         expectedStock.setCurrentPrice(new BigDecimal("130.00"));
 
-        when(stockRepository.existsBySymbol("GOOGL")).thenReturn(false);
+        when(stockJdbcRepository.existsBySymbol("GOOGL")).thenReturn(false);
         when(stockRepository.save(any(Stock.class))).thenReturn(expectedStock);
 
         Stock result = stockService.create(newStock);
 
         assertEquals(2L, result.getId());
         assertEquals("GOOGL", result.getSymbol());
-        verify(stockRepository).existsBySymbol("GOOGL");
+        verify(stockJdbcRepository).existsBySymbol("GOOGL");
         verify(stockRepository).save(argThat(stock -> "GOOGL".equals(stock.getSymbol())));
     }
 
@@ -171,7 +175,7 @@ class StockServiceTest {
         newStock.setName("Apple Inc.");
         newStock.setCurrentPrice(new BigDecimal("150.00"));
 
-        when(stockRepository.existsBySymbol("AAPL")).thenReturn(true);
+        when(stockJdbcRepository.existsBySymbol("AAPL")).thenReturn(true);
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class, 
@@ -179,7 +183,7 @@ class StockServiceTest {
         );
 
         assertEquals("Stock with symbol AAPL already exists", exception.getMessage());
-        verify(stockRepository).existsBySymbol("AAPL");
+        verify(stockJdbcRepository).existsBySymbol("AAPL");
         verify(stockRepository, never()).save(any(Stock.class));
     }
 
@@ -190,7 +194,7 @@ class StockServiceTest {
         newStock.setName("Test Company");
         newStock.setCurrentPrice(new BigDecimal("50.00"));
 
-        when(stockRepository.existsBySymbol(null)).thenReturn(false);
+        when(stockJdbcRepository.existsBySymbol(null)).thenReturn(false);
         when(stockRepository.save(any(Stock.class))).thenReturn(newStock);
 
         Stock result = stockService.create(newStock);
@@ -246,13 +250,13 @@ class StockServiceTest {
         updateData.setSymbol("AAPL2");
 
         when(stockRepository.findById(1L)).thenReturn(Optional.of(existingStock));
-        when(stockRepository.existsBySymbol("AAPL2")).thenReturn(false);
+        when(stockJdbcRepository.existsBySymbol("AAPL2")).thenReturn(false);
         when(stockRepository.save(any(Stock.class))).thenReturn(existingStock);
 
         Stock result = stockService.update(1L, updateData);
 
         assertEquals("AAPL2", existingStock.getSymbol());
-        verify(stockRepository).existsBySymbol("AAPL2");
+        verify(stockJdbcRepository).existsBySymbol("AAPL2");
         verify(stockRepository).save(existingStock);
     }
 
@@ -266,7 +270,7 @@ class StockServiceTest {
         updateData.setSymbol("GOOGL");
 
         when(stockRepository.findById(1L)).thenReturn(Optional.of(existingStock));
-        when(stockRepository.existsBySymbol("GOOGL")).thenReturn(true);
+        when(stockJdbcRepository.existsBySymbol("GOOGL")).thenReturn(true);
 
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
@@ -275,7 +279,7 @@ class StockServiceTest {
 
         assertEquals("Stock with symbol GOOGL already exists", exception.getMessage());
         verify(stockRepository).findById(1L);
-        verify(stockRepository).existsBySymbol("GOOGL");
+        verify(stockJdbcRepository).existsBySymbol("GOOGL");
         verify(stockRepository, never()).save(any(Stock.class));
     }
 
@@ -342,22 +346,22 @@ class StockServiceTest {
 
     @Test
     void testDeleteBySymbolSuccess() {
-        when(stockRepository.deleteBySymbol("AAPL")).thenReturn(1);
+        when(stockJdbcRepository.deleteBySymbol("AAPL")).thenReturn(1);
 
         boolean result = stockService.deleteBySymbol("aapl");
 
         assertTrue(result);
-        verify(stockRepository).deleteBySymbol("AAPL");
+        verify(stockJdbcRepository).deleteBySymbol("AAPL");
     }
 
     @Test
     void testDeleteBySymbolNotFound() {
-        when(stockRepository.deleteBySymbol("NONEXISTENT")).thenReturn(0);
+        when(stockJdbcRepository.deleteBySymbol("NONEXISTENT")).thenReturn(0);
 
         boolean result = stockService.deleteBySymbol("NONEXISTENT");
 
         assertFalse(result);
-        verify(stockRepository).deleteBySymbol("NONEXISTENT");
+        verify(stockJdbcRepository).deleteBySymbol("NONEXISTENT");
     }
 
     @Test
@@ -414,13 +418,13 @@ class StockServiceTest {
 
     @Test
     void testBulkUpdatePriceAndVolume() {
-        when(stockRepository.updatePriceAndVolumeBySymbol("AAPL", new BigDecimal("155.00"), 1500000L))
+        when(stockJdbcRepository.updatePriceAndVolumeBySymbol("AAPL", new BigDecimal("155.00"), 1500000L))
             .thenReturn(1);
 
         int result = stockService.bulkUpdatePriceAndVolume("aapl", new BigDecimal("155.00"), 1500000L);
 
         assertEquals(1, result);
-        verify(stockRepository).updatePriceAndVolumeBySymbol("AAPL", new BigDecimal("155.00"), 1500000L);
+        verify(stockJdbcRepository).updatePriceAndVolumeBySymbol("AAPL", new BigDecimal("155.00"), 1500000L);
     }
 
     @Test
@@ -611,14 +615,14 @@ class StockServiceTest {
 
     @Test
     void testExistsBySymbol() {
-        when(stockRepository.existsBySymbol("AAPL")).thenReturn(true);
-        when(stockRepository.existsBySymbol("NONEXISTENT")).thenReturn(false);
+        when(stockJdbcRepository.existsBySymbol("AAPL")).thenReturn(true);
+        when(stockJdbcRepository.existsBySymbol("NONEXISTENT")).thenReturn(false);
 
         assertTrue(stockService.existsBySymbol("aapl"));
         assertFalse(stockService.existsBySymbol("NONEXISTENT"));
 
-        verify(stockRepository).existsBySymbol("AAPL");
-        verify(stockRepository).existsBySymbol("NONEXISTENT");
+        verify(stockJdbcRepository).existsBySymbol("AAPL");
+        verify(stockJdbcRepository).existsBySymbol("NONEXISTENT");
     }
 
     @Test
@@ -640,7 +644,7 @@ class StockServiceTest {
         assertEquals("Apple Inc. Updated", existingStock.getName());
         assertEquals("AAPL", existingStock.getSymbol());
         verify(stockRepository).findById(1L);
-        verify(stockRepository, never()).existsBySymbol(anyString());
+        verify(stockJdbcRepository, never()).existsBySymbol(anyString());
         verify(stockRepository).save(existingStock);
     }
 }

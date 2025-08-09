@@ -1,7 +1,7 @@
 ### Stock Market API Tests
 
-@baseUrl = http://localhost:9898
-@token = eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTc1NDc0OTgwNywiZXhwIjoxNzU0ODM2MjA3fQ.T3qgAbgFwRO12KMefjHLMhQjk1Px1z3JSaC27ntQardQYeHh_yl-60bjTeW8GpoX
+@baseUrl = http://localhost:8080
+@token = eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTc1NDc1MDYzMywiZXhwIjoxNzU0ODM3MDMzfQ.l6jgzPuVUX7lpDcBOAMZDN341G1AEtVripndlHUE9DIvPBWP9I6T-uLPXljn0O8U
 
 ### Health Check
 GET {{baseUrl}}/api/v1/stocks/health

@@ -2,6 +2,7 @@ package anqorithm.stocks.service;
 
 import anqorithm.stocks.entity.Stock;
 import anqorithm.stocks.repository.StockRepository;
+import anqorithm.stocks.repository.StockJdbcRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,11 +22,13 @@ import java.util.Optional;
 public class StockService {
 
     private final StockRepository stockRepository;
+    private final StockJdbcRepository stockJdbcRepository;
     private final StockReadService stockReadService;
 
     @Autowired
-    public StockService(StockRepository stockRepository, StockReadService stockReadService) {
+    public StockService(StockRepository stockRepository, StockJdbcRepository stockJdbcRepository, StockReadService stockReadService) {
         this.stockRepository = stockRepository;
+        this.stockJdbcRepository = stockJdbcRepository;
         this.stockReadService = stockReadService;
     }
 
@@ -62,7 +65,7 @@ public class StockService {
             stock.setSymbol(stock.getSymbol().toUpperCase());
         }
         
-        if (stockRepository.existsBySymbol(stock.getSymbol())) {
+        if (stockJdbcRepository.existsBySymbol(stock.getSymbol())) {
             throw new IllegalArgumentException("Stock with symbol " + stock.getSymbol() + " already exists");
         }
         
@@ -77,7 +80,7 @@ public class StockService {
 
         if (updatedStock.getSymbol() != null && !updatedStock.getSymbol().equals(existingStock.getSymbol())) {
             String upperSymbol = updatedStock.getSymbol().toUpperCase();
-            if (stockRepository.existsBySymbol(upperSymbol)) {
+            if (stockJdbcRepository.existsBySymbol(upperSymbol)) {
                 throw new IllegalArgumentException("Stock with symbol " + upperSymbol + " already exists");
             }
             existingStock.setSymbol(upperSymbol);
@@ -139,7 +142,7 @@ public class StockService {
     @CacheEvict(value = "stocks", key = "#symbol")
     @Transactional
     public boolean deleteBySymbol(String symbol) {
-        int deletedRows = stockRepository.deleteBySymbol(symbol.toUpperCase());
+        int deletedRows = stockJdbcRepository.deleteBySymbol(symbol.toUpperCase());
         return deletedRows > 0;
     }
 
@@ -163,7 +166,7 @@ public class StockService {
 
     @Transactional
     public int bulkUpdatePriceAndVolume(String symbol, BigDecimal price, Long volume) {
-        return stockRepository.updatePriceAndVolumeBySymbol(symbol.toUpperCase(), price, volume);
+        return stockJdbcRepository.updatePriceAndVolumeBySymbol(symbol.toUpperCase(), price, volume);
     }
 
     @Transactional(readOnly = true)
@@ -255,6 +258,6 @@ public class StockService {
 
     @Transactional(readOnly = true)
     public boolean existsBySymbol(String symbol) {
-        return stockRepository.existsBySymbol(symbol.toUpperCase());
+        return stockJdbcRepository.existsBySymbol(symbol.toUpperCase());
     }
 }
