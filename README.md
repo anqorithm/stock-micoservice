@@ -33,6 +33,18 @@
 - **Exception Tests**: 37 tests (error handling scenarios)
 - **Config Tests**: 11 tests (cache & security configuration)
 
+## Architecture
+
+![Architecture Diagram](architecture.png)
+
+The Stock Market Microservice follows a layered architecture pattern:
+
+- **Authentication Layer**: JWT-based security with Spring Security
+- **Application Layer**: RESTful controllers and business services
+- **Data Access Layer**: Dual approach with JPA for writes and JDBC for optimized reads
+- **Database Layer**: PostgreSQL for production, H2 for testing
+- **Infrastructure**: Docker containerization with pgAdmin for database management
+
 ## Quick Start
 
 ### Prerequisites
